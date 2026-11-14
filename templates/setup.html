@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Commander Timer</title>
+</head>
+
+<form method="POST">
+
+    <h1>Commander Timer</h1>
+
+    <h2>Game Setup</h2>
+
+    <p>Enter Player Names:</p>
+
+    {% for player in players %}
+
+        <input type="text" name="players" value="{{ player }}">
+        <span>10:00</span>
+        <br><br>
+
+    {% endfor %}
+
+    <button type="submit"> Add Player</button>
+
+</form>
+</html>
