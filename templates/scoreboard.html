@@ -5,11 +5,31 @@
 </head>
 
 <body>
-  
+    <h1>Commander Scoreboard</h1>
 
     {% for player in players %}
-        <p>{{ player }} - 10:00</p>
+
+        <p>
+            {{ player }} -
+            <span id="timer-{{ loop.index0 }}">10:00</span>
+        </p>
+
     {% endfor %}
 
+    <button onclick="startTimer()">Start Game</button>
 </body>
+
+<script>
+
+    let timers = [600, 600, 600, 600];
+    
+    function startTimer() {
+        setInterval(function() {
+            timers[0] = timers[0] - 1;
+            document.getElementById("timer-0").textContent = timers[0];
+        }, 1000);
+}
+
+</script>
+
 </html>
