@@ -6,10 +6,16 @@ players = ["Player 1", "Player 2", "Player 3", "Player 4"]
 @app.route("/", methods=["GET", "POST"])
 def home():
     global players
-    
+
     if request.method == "POST":
         players = request.form.getlist("players")
-        players.append("New Player")
+
+        if "delete_index" in request.form:
+            del_index = int(request.form.get("delete_index"))
+            players.pop(del_index)
+        
+        else:
+            players.append("New Player")
 
     return render_template("setup.html", players=players)
 

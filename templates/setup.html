@@ -9,13 +9,14 @@
 
     <h1>Commander Timer</h1>
 
-    <h2>Game Setup</h2>
+    <h2>Setup</h2>
 
     <p>Enter Player Names:</p>
 
     {% for player in players %}
 
         <input type="text" name="players" value="{{ player }}">
+        <button type="submit" name="delete_index" value="{{ loop.index0 }}">X</button>
         <span>10:00</span>
         <br><br>
 
