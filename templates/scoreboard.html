@@ -16,14 +16,19 @@
 
     {% endfor %}
 
-    <button onclick="startTimer()">Start Game</button>
+    <button onclick="nextTurn()">Next Turn</button>
 </body>
 
 <script>
 
-    let timers = [600, 600, 600, 600];
+    // Create a 10-minute timer for every player
+    let playerCount = {{ players|length }};
+    let timers = Array(playerCount).fill(600);
   
+    // Track whose turn it currently is
+    let activePlayer = 0;
 
+    //time display function
     function formatTime(seconds) {
         let minutes = Math.floor(seconds / 60);
         let remainingSeconds = seconds % 60;
@@ -32,12 +37,29 @@
             String(remainingSeconds).padStart(2, "0");
     }
 
+    // Advance to the next player
+    function nextTurn() {
+        activePlayer = (activePlayer + 1) % timers.length;
+    }
+
+    // Start the countdown timer for the active player
     function startTimer() {
         setInterval(function() {
-            timers[0] = timers[0] - 1;
-            document.getElementById("timer-0").textContent = formatTime(timers[0]);
+            if (timers.length === 0) {
+                return;
+            }
+
+            if (timers[activePlayer] > 0) {
+                timers[activePlayer] = timers[activePlayer] - 1;
+                document.getElementById("timer-" + activePlayer).textContent =
+                    formatTime(timers[activePlayer]);
+            }
         }, 1000);
+
     }
+
+    // Automatically start the game when the scoreboard loads
+    startTimer();
 
 </script>
 
