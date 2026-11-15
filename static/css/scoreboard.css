@@ -1,0 +1,23 @@
+/* Overall scoreboard */
+body {font-family: Arial, sans-serif;font-size: 32px;margin: 40px;}
+
+/* Main title */
+h1 {font-size: 48px;}
+
+/* Round counter */
+#round-counter {font-weight: bold;}
+
+/* Player row */
+.player-row {padding: 15px;margin: 10px 0;border-radius: 8px;}
+
+/* Player name and timer */
+.player-row p {margin: 0;}
+
+/* Highlight the active player */
+.active-player {background-color: #d9ead3; border: 3px solid #38761d; font-weight: bold;}
+
+/* Timer */
+.player-timer {font-size: 42px;font-weight: bold;}
+
+/* Buttons */
+button {font-size: 28px;padding: 12px 24px;margin: 10px 5px;}
