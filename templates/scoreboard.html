@@ -7,6 +7,8 @@
 <body>
     <h1>Commander Scoreboard</h1>
 
+    <p>Round: <span id="round-counter">1</span></p>
+
     {% for player in players %}
 
         <p>
@@ -27,6 +29,8 @@
 </body>
 
 <script>
+    // Track the current round
+    let round = 1;
 
     // Store each player's remaining time
     let timers = [
@@ -53,6 +57,11 @@
     // Advance to the next player
     function nextTurn() {
         activePlayer = (activePlayer + 1) % timers.length;
+
+        if (activePlayer === 0) {
+           round = round + 1;
+           document.getElementById("round-counter").textContent = round;
+        }
     }
 
     // Toggle the global timeout
