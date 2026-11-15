@@ -19,11 +19,16 @@
     {% endfor %}
 
     <button onclick="nextTurn()">Next Turn</button>
+
+    <button onclick="toggleTimeout()">Timeout</button>
+
+    <p>CTRL+P for Timeout</p>
+
 </body>
 
 <script>
 
-    // Create a 10-minute timer for every player
+    // Store each player's remaining time
     let timers = [
         {% for player in players %}
             {{ player.remaining_time }},
@@ -33,7 +38,10 @@
     // Track whose turn it currently is
     let activePlayer = 0;
 
-    //time display function
+    // Track whether the game is currently paused
+    let gamePaused = false;
+
+    // Time display as MM:SS
     function formatTime(seconds) {
         let minutes = Math.floor(seconds / 60);
         let remainingSeconds = seconds % 60;
@@ -47,18 +55,48 @@
         activePlayer = (activePlayer + 1) % timers.length;
     }
 
-    // Start the countdown timer for the active player
+    // Toggle the global timeout
+    function toggleTimeout() {
+        gamePaused = !gamePaused;
+
+        if (gamePaused) {
+            document.querySelector("button[onclick='toggleTimeout()']").textContent = "Resume Game";
+        } else {
+            document.querySelector("button[onclick='toggleTimeout()']").textContent = "Timeout";
+        }
+    }
+
+    // Listen for CTRL+P
+    document.addEventListener("keydown", function(event) {
+
+        if (event.ctrlKey && event.key.toLowerCase() === "p") {
+            event.preventDefault();
+            toggleTimeout();
+        }
+
+    });
+
+    // Start the countdown timer
     function startTimer() {
+
         setInterval(function() {
+
+            // Do nothing while the game is paused
+            if (gamePaused) {
+                return;
+            }
+
             if (timers.length === 0) {
                 return;
             }
 
             if (timers[activePlayer] > 0) {
                 timers[activePlayer] = timers[activePlayer] - 1;
+
                 document.getElementById("timer-" + activePlayer).textContent =
                     formatTime(timers[activePlayer]);
             }
+
         }, 1000);
 
     }
