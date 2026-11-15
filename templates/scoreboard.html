@@ -10,8 +10,10 @@
     {% for player in players %}
 
         <p>
-            {{ player }} -
-            <span id="timer-{{ loop.index0 }}">10:00</span>
+            {{ player.name }} -
+            <span id="timer-{{ loop.index0 }}">
+                {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
+            </span>
         </p>
 
     {% endfor %}
@@ -22,8 +24,11 @@
 <script>
 
     // Create a 10-minute timer for every player
-    let playerCount = {{ players|length }};
-    let timers = Array(playerCount).fill(600);
+    let timers = [
+        {% for player in players %}
+            {{ player.remaining_time }},
+        {% endfor %}
+    ];
   
     // Track whose turn it currently is
     let activePlayer = 0;

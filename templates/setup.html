@@ -13,7 +13,14 @@
 
     {% for player in players %}
 
-        <input type="text" name="players" value="{{ player }}">
+        <input type="text" name="players" value="{{ player.name }}">
+
+        <input
+            type="number"
+            name="times"
+            value="{{ player.remaining_time }}"
+            min="0"
+        >
 
         {% if not loop.first %}
             <button type="submit" name="move_up" value="{{ loop.index0 }}">↑</button>
@@ -24,7 +31,7 @@
         {% endif %}
 
         <button type="submit" name="delete_index" value="{{ loop.index0 }}">X</button>
-        <span>10:00</span>
+
         <br><br>
 
     {% endfor %}

@@ -1,14 +1,28 @@
 from flask import Flask, render_template, request, redirect,  url_for
 
 app = Flask(__name__)
-players = ["Player 1", "Player 2", "Player 3", "Player 4"]
+
+players = [
+    {"name": "Player 1", "starting_time": 600, "remaining_time": 600},
+    {"name": "Player 2", "starting_time": 600, "remaining_time": 600},
+    {"name": "Player 3", "starting_time": 600, "remaining_time": 600},
+    {"name": "Player 4", "starting_time": 600, "remaining_time": 600}
+]
 
 @app.route("/", methods=["GET", "POST"])
 def home():
     global players
 
     if request.method == "POST":
-        players = request.form.getlist("players")
+        submitted_names = request.form.getlist("players")
+
+        for i, name in enumerate(submitted_names):
+            players[i]["name"] = name
+
+        submitted_times = request.form.getlist("times")
+
+        for i, time in enumerate(submitted_times):
+            players[i]["remaining_time"] = int(time)
 
         if "delete_index" in request.form:
             del_index = int(request.form.get("delete_index"))
@@ -30,7 +44,11 @@ def home():
             return redirect(url_for("scoreboard"))
         
         else:
-            players.append("New Player")
+            players.append({
+                "name": "New Player",
+                "starting_time": 600,
+                "remaining_time": 600
+            })
 
     return render_template("setup.html", players=players)
 
