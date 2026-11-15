@@ -2,6 +2,33 @@
 <html>
 <head>
     <title>Scoreboard</title>
+
+<style>
+    /* Overall scoreboard */
+    body {font-family: Arial, sans-serif;font-size: 32px;margin: 40px;}
+
+    /* Main title */
+    h1 {font-size: 48px;}
+
+    /* Round counter */
+    #round-counter {font-weight: bold;}
+
+    /* Player row */
+    .player-row {padding: 15px;margin: 10px 0;border-radius: 8px;}
+
+    /* Player name and timer */
+    .player-row p {margin: 0;}
+
+    /* Highlight the active player */
+    .active-player {background-color: #d9ead3; border: 3px solid #38761d; font-weight: bold;}
+
+    /* Timer */
+    .player-timer {font-size: 42px;font-weight: bold;}
+
+    /* Buttons */
+    button {font-size: 28px;padding: 12px 24px;margin: 10px 5px;}
+</style>
+
 </head>
 
 <body>
@@ -48,6 +75,18 @@
     // Track whose turn it currently is
     let activePlayer = 0;
 
+    // Update the active player highlight
+    function updateActivePlayer() {
+   
+        let playerRows = document.querySelectorAll(".player-row");
+        // Remove the highlight from all players    
+        playerRows.forEach(function(row) {
+            row.classList.remove("active-player");
+        });
+        // Highlight the active player
+        playerRows[activePlayer].classList.add("active-player");
+    }
+
     // Track whether the game is currently paused
     let gamePaused = false;
 
@@ -62,12 +101,26 @@
 
     // Advance to the next player
     function nextTurn() {
-        activePlayer = (activePlayer + 1) % timers.length;
 
+        // Remember where we started
+        let startingPlayer = activePlayer;
+
+        // Keep looking for the next player with time remaining
+        do {
+            activePlayer = (activePlayer + 1) % timers.length;
+            } 
+                while (
+                timers[activePlayer] === 0 && activePlayer !== startingPlayer
+                );
+
+        // Update the round when we return to Player 1
         if (activePlayer === 0) {
-           round = round + 1;
-           document.getElementById("round-counter").textContent = round;
+            round = round + 1;
+            document.getElementById("round-counter").textContent = round;
         }
+
+        // Highlight the new active player
+        updateActivePlayer();
     }
 
     // Toggle the global timeout
@@ -102,11 +155,19 @@
                 return;
             }
             if (timers[activePlayer] > 0) {
-                timers[activePlayer] = timers[activePlayer] - 1;
 
-                document.getElementById("timer-" + activePlayer).textContent =
-                    formatTime(timers[activePlayer]);
+            timers[activePlayer] = timers[activePlayer] - 1;
+
+            document.getElementById(
+                "timer-" + activePlayer
+            ).textContent =
+                formatTime(timers[activePlayer]);
+
+            if (timers[activePlayer] === 0) {
+
+                checkForWinner();
             }
+        }
         }, 1000);
     }
 
@@ -170,6 +231,24 @@
             window.location.href = "/";
         }
     }
+
+    function checkForWinner() {
+
+        // Count how many players still have time
+        let playersRemaining = timers.filter(function(time) {
+            return time > 0;
+        }).length;
+
+        // If only one player remains, the game is over
+        if (playersRemaining === 1) {
+            gamePaused = true;
+            return true;
+        }
+        return false;
+    }
+
+    // Highlight the starting player
+    updateActivePlayer();
 
     // Automatically start the game when the scoreboard loads
     startTimer();
