@@ -56,5 +56,20 @@ def home():
 def scoreboard():
     return render_template("scoreboard.html", players=players)
 
+@app.route("/save_game_state", methods=["POST"])
+def save_game_state():
+
+    global players
+
+    # Receive the JSON data from JavaScript
+    current_players = request.get_json()
+
+    # Update the existing Python player records
+    for i, player in enumerate(current_players):
+        players[i]["name"] = player["name"]
+        players[i]["remaining_time"] = int(player["remaining_time"])
+    print("Game state successfully updated!")
+    return "Game state saved", 200
+
 if __name__ == "__main__":
     app.run()

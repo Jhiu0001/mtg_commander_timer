@@ -11,18 +11,24 @@
 
     {% for player in players %}
 
-        <p>
-            {{ player.name }} -
-            <span id="timer-{{ loop.index0 }}">
-                {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
-            </span>
-        </p>
+        <div class="player-row" data-player-name="{{ player.name }}">
+
+            <p>
+                {{ player.name }} -
+                <span id="timer-{{ loop.index0 }}">
+                    {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
+                </span>
+            </p>
+
+        </div>
 
     {% endfor %}
 
     <button onclick="nextTurn()">Next Turn</button>
 
     <button onclick="toggleTimeout()">Timeout</button>
+
+    <button onclick="backToSetup()">Back to Setup</button>
 
     <p>CTRL+P for Timeout</p>
 
@@ -87,27 +93,82 @@
 
     // Start the countdown timer
     function startTimer() {
-
         setInterval(function() {
-
             // Do nothing while the game is paused
             if (gamePaused) {
                 return;
             }
-
             if (timers.length === 0) {
                 return;
             }
-
             if (timers[activePlayer] > 0) {
                 timers[activePlayer] = timers[activePlayer] - 1;
 
                 document.getElementById("timer-" + activePlayer).textContent =
                     formatTime(timers[activePlayer]);
             }
-
         }, 1000);
+    }
 
+    // Capture the current game state
+    function captureGameState() {
+
+        let currentPlayers = [];
+
+        // Find every player displayed on the scoreboard
+        let playerRows = document.querySelectorAll(".player-row");
+        playerRows.forEach(function(row) {
+            // Capture player name
+            let name = row.dataset.playerName;
+            // Capture displayed time
+            let timeDisplay = row.querySelector("span").textContent;
+            // Convert MM:SS into seconds
+            let timeParts = timeDisplay.split(":");
+            let minutes = parseInt(timeParts[0]);
+            let seconds = parseInt(timeParts[1]);
+            let remainingTime = (minutes * 60) + seconds;
+
+            // Add player information to our array
+            currentPlayers.push({
+                name: name,
+                remaining_time: remainingTime
+            });
+        });
+        console.log(currentPlayers);
+        return currentPlayers;
+    }        
+
+    // Save the current game state to Flask
+    async function saveGameState() {
+
+        // Capture current player information
+        let currentPlayers = captureGameState();
+
+        // Send the data to Flask
+        let response = await fetch("/save_game_state", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(currentPlayers)
+        });
+
+        // Check whether Flask successfully saved the data
+        if (response.ok) {
+            console.log("Game state saved successfully!");
+            return true;
+        } else {
+            console.log("Failed to save game state!");
+            return false;
+        }
+    }
+
+    // Return to Setup after saving the game state
+    async function backToSetup() {
+        let saved = await saveGameState();
+        if (saved) {
+            window.location.href = "/";
+        }
     }
 
     // Automatically start the game when the scoreboard loads
