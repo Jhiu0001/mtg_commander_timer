@@ -2,8 +2,7 @@
 // 1. GAME STATE
 // =====================================
 
-
-let round = 1; // Initialize the round counter
+let round = savedGameState.round; // Initialize the round counter
 let activePlayer = 0; // Initialize the active player index
 let gamePaused = false; // Initialize the game paused state to false
 
@@ -13,6 +12,17 @@ let playerRows = document.querySelectorAll(".player-row");
 let timers = Array.from(playerRows).map(function(row) {
     return Number(row.dataset.remainingTime);
 });
+
+// Find the active player's current position using their unique ID
+activePlayer = Array.from(playerRows).findIndex(function(row) {
+    return Number(row.dataset.playerId) ===
+        Number(savedGameState.active_player_id);
+});
+
+// If the saved active player no longer exists, default to the first player
+if (activePlayer === -1) {
+    activePlayer = 0;
+}
 
 // =====================================
 // 2. DISPLAY FUNCTIONS
@@ -147,6 +157,8 @@ function captureGameState() {
     // Find every player displayed on the scoreboard
     let playerRows = document.querySelectorAll(".player-row");
     playerRows.forEach(function(row) {
+        // Capture player ID
+        let id = Number(row.dataset.playerId);
         // Capture player name
         let name = row.dataset.playerName;
         // Capture displayed time
@@ -159,6 +171,7 @@ function captureGameState() {
 
         // Add player information to our array
         currentPlayers.push({
+            id: id,
             name: name,
             remaining_time: remainingTime
         });
@@ -173,18 +186,33 @@ async function saveGameState() {
     // Capture current player information
     let currentPlayers = captureGameState();
 
+    // Identify the active player using their unique ID
+    let activePlayerId = Number(
+        playerRows[activePlayer].dataset.playerId
+    );
+
+    // Combine player information and game information
+    let currentGameState = {
+        players: currentPlayers,
+
+        game_state: {
+            round: round,
+            active_player_id: activePlayerId
+        }
+    };
+
     // Send the data to Flask
     let response = await fetch("/save_game_state", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(currentPlayers)
+        body: JSON.stringify(currentGameState)
     });
 
     // Check whether Flask successfully saved the data
     if (response.ok) {
-        console.log("Game state saved successfully!");
+        console.log("Saved GS");
         return true;
     } else {
         console.log("Failed to save game state!");
@@ -204,7 +232,10 @@ async function backToSetup() {
 // 6. INITIALIZATION
 // =====================================
 
-// Highlight the starting player
+// Display the saved round number
+document.getElementById("round-counter").textContent = round;
+
+// Highlight the saved active player
 updateActivePlayer();
 
 // Automatically start the game when the scoreboard loads

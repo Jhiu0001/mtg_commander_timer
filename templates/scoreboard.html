@@ -14,6 +14,7 @@
     {% for player in players %}
 
         <div class="player-row"
+            data-player-id="{{ player.id }}"
              data-player-name="{{ player.name }}"
              data-remaining-time="{{ player.remaining_time }}">
 
@@ -33,6 +34,10 @@
     <button onclick="backToSetup()">Back to Setup</button>
     <p>CTRL+P for Timeout</p>
     
+    <script>
+        const savedGameState = {{ game_state | tojson }};
+    </script>
+
     <script src="{{ url_for('static', filename='js/scoreboard.js') }}"></script>
 
 </body>
