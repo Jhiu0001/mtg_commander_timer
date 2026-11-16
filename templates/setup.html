@@ -15,10 +15,11 @@
         <input type="text" name="players" value="{{ player.name }}">
 
         <input
-            type="number"
-            name="times"
-            value="{{ player.remaining_time }}"
-            min="0"
+        type="text"
+        name="times"
+        value="{{ '%02d:%02d'|format(player.remaining_time // 60, player.remaining_time % 60) }}"
+        pattern="[0-9]+:[0-5][0-9]"
+        title="Enter time as MM:SS, e.g. 10:00"
         >
 
         {% if not loop.first %}

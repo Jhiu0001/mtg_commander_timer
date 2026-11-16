@@ -1,5 +1,15 @@
 from flask import Flask, render_template, request, redirect,  url_for
 
+def parse_mmss(value):
+    minutes_text, seconds_text = value.strip().split(":")
+    minutes = int(minutes_text)
+    seconds = int(seconds_text)
+
+    if minutes < 0 or not 0 <= seconds < 60:
+        raise ValueError("Time must be MM:SS with seconds from 00 to 59")
+
+    return minutes * 60 + seconds
+
 app = Flask(__name__)
 
 players = [
@@ -29,7 +39,7 @@ def home():
         submitted_times = request.form.getlist("times")
 
         for i, time in enumerate(submitted_times):
-            players[i]["remaining_time"] = int(time)
+            players[i]["remaining_time"] = parse_mmss(time)
 
         if "delete_index" in request.form:
             del_index = int(request.form.get("delete_index"))
