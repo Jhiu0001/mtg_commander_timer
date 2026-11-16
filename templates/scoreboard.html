@@ -15,15 +15,28 @@
 
         <div class="player-row"
             data-player-id="{{ player.id }}"
-             data-player-name="{{ player.name }}"
-             data-remaining-time="{{ player.remaining_time }}">
+            data-player-name="{{ player.name }}"
+            data-remaining-time="{{ player.remaining_time }}"
+            data-player-life="{{ player.life_total}}"
+            >
 
-            <p>
-                {{ player.name }} -
-                <span id="timer-{{ loop.index0 }}" class="player-timer">
-                    {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
+            <span class="player-name">
+            {{ player.name }}
+            </span>
+
+            <span id="timer-{{ loop.index0 }}" class="player-timer">
+                {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
+            </span>
+
+            <span class="player-life-controls">  
+                <button onclick="decreaseLife({{ loop.index0 }})">-</button>
+
+                <span id="life-{{ loop.index0 }}" class="player-life">
+                    {{ player.life_total }}
                 </span>
-            </p>
+                    
+                <button onclick="increaseLife({{ loop.index0 }})">+</button>
+            </span>
 
         </div>
 

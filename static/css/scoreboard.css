@@ -8,10 +8,24 @@ h1 {font-size: 48px;}
 #round-counter {font-weight: bold;}
 
 /* Player row */
-.player-row {padding: 15px;margin: 10px 0;border-radius: 8px;}
+.player-row {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
 
-/* Player name and timer */
-.player-row p {margin: 0;}
+.player-name {
+    flex: 1;
+}
+
+.player-life-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
 /* Highlight the active player */
 .active-player {background-color: #d9ead3; border: 3px solid #38761d; font-weight: bold;}

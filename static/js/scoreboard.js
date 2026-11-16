@@ -115,6 +115,20 @@ function checkForWinner() {
     return false;
 }
 
+function decreaseLife(playerIndex) {
+    let lifeElement = document.getElementById("life-" + playerIndex);
+    let currentLife = parseInt(lifeElement.textContent);
+    if (currentLife > 0) {
+        lifeElement.textContent = currentLife - 1;
+    }
+}
+
+function increaseLife(playerIndex) {
+    let lifeElement = document.getElementById("life-" + playerIndex);
+    let currentLife = parseInt(lifeElement.textContent);
+    lifeElement.textContent = currentLife + 1;
+}
+
 // =====================================
 // 4. TIMER MANAGEMENT
 // =====================================
