@@ -67,9 +67,10 @@ function nextTurn() {
             timers[activePlayer] === 0 && activePlayer !== startingPlayer
             );
 
-    // Update the round when we return to Player 1
-    if (activePlayer === 0) {
+    // Check whether we have wrapped around the player sequence
+    if (activePlayer <= startingPlayer && activePlayer !== startingPlayer) {
         round = round + 1;
+
         document.getElementById("round-counter").textContent = round;
     }
 
