@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect,  url_for
+import threading
+import webbrowser
 
 def parse_mmss(value):
     minutes_text, seconds_text = value.strip().split(":")
@@ -13,10 +15,10 @@ def parse_mmss(value):
 app = Flask(__name__)
 
 players = [
-    {"id": 1,"name": "Player 1", "starting_time": 600, "remaining_time": 600},
-    {"id": 2,"name": "Player 2", "starting_time": 600, "remaining_time": 600},
-    {"id": 3,"name": "Player 3", "starting_time": 600, "remaining_time": 600},
-    {"id": 4,"name": "Player 4", "starting_time": 600, "remaining_time": 600}
+    {"id": 1,"name": "Player 1", "starting_time": 600, "remaining_time": 600, "life_total": 40},
+    {"id": 2,"name": "Player 2", "starting_time": 600, "remaining_time": 600, "life_total": 40},
+    {"id": 3,"name": "Player 3", "starting_time": 600, "remaining_time": 600, "life_total": 40},
+    {"id": 4,"name": "Player 4", "starting_time": 600, "remaining_time": 600, "life_total": 40}
 ]
 
 game_state = {
@@ -65,7 +67,8 @@ def home():
                 "id": next_player_id,
                 "name": f"Player {next_player_id}",
                 "starting_time": 600,
-                "remaining_time": 600
+                "remaining_time": 600,
+                "life_total": 40
             })
 
             next_player_id += 1
@@ -108,4 +111,9 @@ def save_game_state():
     return "Game state saved", 200
 
 if __name__ == "__main__":
-    app.run()
+    url = "http://127.0.0.1:5000"
+
+    # Wait briefly so the server has time to start, then open the browser
+    threading.Timer(1, lambda: webbrowser.open(url)).start()
+
+    app.run(host="127.0.0.1", port=5000)
