@@ -55,6 +55,32 @@
     <button onclick="nextTurn()">Next Turn</button>
     <button onclick="toggleTimeout()">Timeout</button>
     <button onclick="backToSetup()">Back to Setup</button>
+    <button onclick="toggleGameLog()">Game Log</button>
+
+    <!-- GAME LOG -->
+    <div id="game-log-container" style="display: none;">
+
+        <h2>Game History</h2>
+
+        <table id="game-log-table">
+            <thead>
+                <tr>
+                    <th>Round</th>
+                    <th>Player</th>
+                    <th>Time Remaining</th>
+
+                    {% for player in players %}
+                        <th>{{ player.name }}</th>
+                    {% endfor %}
+
+                </tr>
+            </thead>
+
+            <tbody id="game-log-body">
+            </tbody>
+        </table>
+
+    </div>
 
     <script>
         const savedGameState = {{ game_state | tojson }};

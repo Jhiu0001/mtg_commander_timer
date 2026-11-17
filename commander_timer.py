@@ -24,6 +24,14 @@ def create_player(player_id):
         "elimination_reason": None
     }
 
+def create_log_entry(round_number, player_name, remaining_time, life_totals):
+    return {
+        "round": round_number,
+        "player_name": player_name,
+        "remaining_time": remaining_time,
+        "life_totals": life_totals
+    }
+
 app = Flask(__name__)
 
 players = [
@@ -35,7 +43,8 @@ players = [
 
 game_state = {
     "round": 1,
-    "active_player_id": 1
+    "active_player_id": 1,
+    "game_log": []
 }
 
 next_player_id = 5
@@ -109,9 +118,23 @@ def new_game():
 
     # Reset overall game state
     game_state["round"] = 1
+    game_state["game_log"] = []
 
     if players:
         game_state["active_player_id"] = players[0]["id"]
+        
+        # Capture the initial game state
+        initial_life_totals = [
+            player["life_total"] for player in players
+        ]
+
+        initial_log_entry = create_log_entry(
+            round_number=1,
+            player_name="Start",
+            remaining_time=players[0]["remaining_time"],
+            life_totals=initial_life_totals
+        )
+        game_state["game_log"].append(initial_log_entry)
     else:
         game_state["active_player_id"] = None
 
@@ -132,6 +155,9 @@ def save_game_state():
     # Extract overall game information
     current_game_state = current_data["game_state"]
 
+    # Extract historical log entry
+    log_entry = current_data.get("log_entry")
+
     # Update existing player records using unique IDs
     for current_player in current_players:
         for player in players:
@@ -145,6 +171,10 @@ def save_game_state():
     game_state["round"] = current_game_state["round"]
 
     game_state["active_player_id"] = current_game_state["active_player_id"]
+
+    # Append historical record if one was provided
+    if log_entry is not None:
+        game_state["game_log"].append(log_entry)
 
     return "Game state saved", 200
 
