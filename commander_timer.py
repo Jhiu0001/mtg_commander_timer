@@ -33,16 +33,25 @@ def home():
     global players, next_player_id
 
     if request.method == "POST":
+        # Retrieve submitted player names
         submitted_names = request.form.getlist("players")
 
         for i, name in enumerate(submitted_names):
             players[i]["name"] = name
 
+        # Retrieve submitted player times
         submitted_times = request.form.getlist("times")
 
         for i, time in enumerate(submitted_times):
             players[i]["remaining_time"] = parse_mmss(time)
 
+        # Retrieve submitted player life totals
+        submitted_lifes = request.form.getlist("lifes")
+
+        for i, life in enumerate(submitted_lifes):
+            players[i]["life_total"] = int(life)
+
+        # Handle player management actions
         if "delete_index" in request.form:
             del_index = int(request.form.get("delete_index"))
             players.pop(del_index)
@@ -98,9 +107,8 @@ def save_game_state():
         for player in players:
             if player["id"] == current_player["id"]:
                 player["name"] = current_player["name"]
-                player["remaining_time"] = int(
-                    current_player["remaining_time"]
-                )
+                player["remaining_time"] = int(current_player["remaining_time"])
+                player["life_total"] = int(current_player["life_total"])
                 break
 
     # Update overall game state

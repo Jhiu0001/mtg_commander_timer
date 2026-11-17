@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Commander Timer</title>
+    <title>Commander Timer Setup</title>
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', filename='css/scoreboard.css') }}">
 </head>
 
-<form method="POST">
+<body>
 
-    <h1>Setup</h1>
+    <h1>Commander Game Setup</h1>
 
-    <p>Enter Player Names:</p>
+    <form method="POST">
+    
+        <!-- Column headings -->
+        <div class="setup-header">
+            <span>Name</span>
+            <span>Life Totals</span>
+            <span>Time</span>
+            <span>Actions</span>
+        </div>
 
-    {% for player in players %}
+        {% for player in players %}
+        <div class="setup-player-row">
+            <!-- Player name -->
+            <input type="text" name="players" value="{{ player.name }}" required>
+            <!-- Player life total -->
+            <input type="number" name="lifes" value="{{ player.life_total }}" min="0" required>
 
-        <input type="text" name="players" value="{{ player.name }}">
+            <!-- Player time -->
+            <input
+            type="text"
+            name="times"
+            value="{{ '%02d:%02d'|format(player.remaining_time // 60, player.remaining_time % 60) }}"
+            pattern="[0-9]+:[0-5][0-9]"
+            title="Enter time as MM:SS, e.g. 10:00"
+            required
+            >
 
-        <input
-        type="text"
-        name="times"
-        value="{{ '%02d:%02d'|format(player.remaining_time // 60, player.remaining_time % 60) }}"
-        pattern="[0-9]+:[0-5][0-9]"
-        title="Enter time as MM:SS, e.g. 10:00"
-        >
+            <!-- Player management buttons -->
+            <div class="setup-actions">
+                {% if not loop.first %}
+                    <button type="submit" name="move_up" value="{{ loop.index0 }}">↑</button>
+                {% endif %}
 
-        {% if not loop.first %}
-            <button type="submit" name="move_up" value="{{ loop.index0 }}">↑</button>
-        {% endif %}
+                {% if not loop.last %}
+                    <button type="submit" name="move_down" value="{{ loop.index0 }}">↓</button>
+                {% endif %}
 
-        {% if not loop.last %}
-            <button type="submit" name="move_down" value="{{ loop.index0 }}">↓</button>
-        {% endif %}
+                <button type="submit" name="delete_index" value="{{ loop.index0 }}">X</button>
+            </div>
+        </div>
 
-        <button type="submit" name="delete_index" value="{{ loop.index0 }}">X</button>
-
-        <br><br>
-
-    {% endfor %}
-
-    <button type="submit"> Add Player</button>
-
-    <button type="submit" name="start_game" value="true">Start Game</button>
+        {% endfor %}
+        <div class="setup-buttons"></div>
+            <button type="submit"> Add Player</button>
+            <button type="submit" name="start_game" value="true">Start Game</button>
+        </div>
 
 </form>
+</body>
 </html>

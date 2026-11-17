@@ -35,3 +35,57 @@ h1 {font-size: 48px;}
 
 /* Buttons */
 button {font-size: 28px;padding: 12px 24px;margin: 10px 5px;}
+
+/* =====================================
+   SETUP PAGE
+===================================== */
+
+.setup-header,
+.setup-player-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.2fr;
+    gap: 15px;
+    align-items: center;
+    max-width: 900px;
+    margin: 15px auto;
+}
+
+.setup-header {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.setup-player-row {
+    padding: 12px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.setup-player-row input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    font-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.setup-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.setup-actions button,
+.setup-buttons button {
+    font-size: 18px;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.setup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}

@@ -117,16 +117,28 @@ function checkForWinner() {
 
 function decreaseLife(playerIndex) {
     let lifeElement = document.getElementById("life-" + playerIndex);
+    let playerRow = playerRows[playerIndex];
+
     let currentLife = parseInt(lifeElement.textContent);
+
     if (currentLife > 0) {
-        lifeElement.textContent = currentLife - 1;
+        currentLife = currentLife - 1;
+        // Update both the display and the metadata used when saving game state
+        lifeElement.textContent = currentLife; 
+        playerRow.dataset.playerLife = currentLife;
     }
 }
 
 function increaseLife(playerIndex) {
     let lifeElement = document.getElementById("life-" + playerIndex);
+    let playerRow = playerRows[playerIndex];
+
     let currentLife = parseInt(lifeElement.textContent);
-    lifeElement.textContent = currentLife + 1;
+
+    currentLife = currentLife + 1;
+    // Update both the display and the metadata used when saving game state
+    lifeElement.textContent = currentLife;
+    playerRow.dataset.playerLife = currentLife;
 }
 
 // =====================================
@@ -177,21 +189,24 @@ function captureGameState() {
         // Capture player name
         let name = row.dataset.playerName;
         // Capture displayed time
-        let timeDisplay = row.querySelector("span").textContent;
+        let timeDisplay = row.querySelector(".player-timer").textContent;
         // Convert MM:SS into seconds
         let timeParts = timeDisplay.split(":");
         let minutes = parseInt(timeParts[0]);
         let seconds = parseInt(timeParts[1]);
         let remainingTime = (minutes * 60) + seconds;
+        // Capture displayed life
+        let life =  row.querySelector(".player-life").textContent;
 
         // Add player information to our array
         currentPlayers.push({
             id: id,
             name: name,
-            remaining_time: remainingTime
+            remaining_time: remainingTime,
+            life_total: life
         });
     });
-    console.log(currentPlayers);
+
     return currentPlayers;
 }        
 
