@@ -15,10 +15,10 @@ def parse_mmss(value):
 app = Flask(__name__)
 
 players = [
-    {"id": 1,"name": "Player 1", "starting_time": 600, "remaining_time": 600, "life_total": 40},
-    {"id": 2,"name": "Player 2", "starting_time": 600, "remaining_time": 600, "life_total": 40},
-    {"id": 3,"name": "Player 3", "starting_time": 600, "remaining_time": 600, "life_total": 40},
-    {"id": 4,"name": "Player 4", "starting_time": 600, "remaining_time": 600, "life_total": 40}
+    {"id": 1,"name": "Player 1", "starting_time": 600, "remaining_time": 600,"starting_life_total": 40, "life_total": 40},
+    {"id": 2,"name": "Player 2", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40},
+    {"id": 3,"name": "Player 3", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40},
+    {"id": 4,"name": "Player 4", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40}
 ]
 
 game_state = {
@@ -43,12 +43,14 @@ def home():
         submitted_times = request.form.getlist("times")
 
         for i, time in enumerate(submitted_times):
+            players[i]["starting_time"] = parse_mmss(time)
             players[i]["remaining_time"] = parse_mmss(time)
 
         # Retrieve submitted player life totals
         submitted_lifes = request.form.getlist("lifes")
 
         for i, life in enumerate(submitted_lifes):
+            players[i]["starting_life_total"] = int(life)
             players[i]["life_total"] = int(life)
 
         # Handle player management actions
@@ -77,6 +79,7 @@ def home():
                 "name": f"Player {next_player_id}",
                 "starting_time": 600,
                 "remaining_time": 600,
+                "starting_life_total": 40,
                 "life_total": 40
             })
 
@@ -87,6 +90,26 @@ def home():
 @app.route("/scoreboard")
 def scoreboard():
     return render_template("scoreboard.html", players=players, game_state=game_state)
+
+@app.route("/new_game", methods=["POST"])
+def new_game():
+    global players, game_state
+
+    # Reset every player's game state
+    for player in players:
+        player["remaining_time"] = player["starting_time"]
+        player["life_total"] = player["starting_life_total"]
+
+    # Reset overall game state
+    game_state["round"] = 1
+
+    if players:
+        game_state["active_player_id"] = players[0]["id"]
+    else:
+        game_state["active_player_id"] = None
+
+    # Return to a fresh scoreboard
+    return redirect(url_for("scoreboard"))
 
 @app.route("/save_game_state", methods=["POST"])
 def save_game_state():

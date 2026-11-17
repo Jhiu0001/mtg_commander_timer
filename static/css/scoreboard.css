@@ -1,3 +1,14 @@
+/* =====================================
+   SCOREBOARD
+===================================== */
+
+.scoreboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
 /* Overall scoreboard */
 body {font-family: Arial, sans-serif;font-size: 32px;margin: 40px;}
 

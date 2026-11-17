@@ -5,6 +5,7 @@
 let round = savedGameState.round; // Initialize the round counter
 let activePlayer = 0; // Initialize the active player index
 let gamePaused = false; // Initialize the game paused state to false
+let timerInterval = null; // Prevent multiple countdown intervals
 
 // Store each player's remaining time
 let playerRows = document.querySelectorAll(".player-row");
@@ -147,7 +148,12 @@ function increaseLife(playerIndex) {
 
 // Start the countdown timer
 function startTimer() {
-    setInterval(function() {
+    // Prevent multiple countdown intervals
+    if (timerInterval !== null) {
+        clearInterval(timerInterval);
+    }
+
+    timerInterval = setInterval(function() {
         // Do nothing while the game is paused
         if (gamePaused) {
             return;
@@ -255,6 +261,33 @@ async function backToSetup() {
     let saved = await saveGameState();
     if (saved) {
         window.location.href = "/";
+    }
+}
+
+// Start a new game
+async function newGame() {
+
+    // Confirm before destroying current game progress
+    let confirmed = confirm(
+        "Are you sure you want to start a new game? " +
+        "All current game progress will be reset."
+    );
+
+    // Stop if the user cancels
+    if (!confirmed) {
+        return;
+    }
+
+    // Send request to Flask
+    let response = await fetch("/new_game", {
+        method: "POST"
+    });
+
+    // Redirect after successful reset
+    if (response.ok) {
+        window.location.href = "/scoreboard";
+    } else {
+        alert("Failed to start a new game!");
     }
 }
 

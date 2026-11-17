@@ -7,7 +7,10 @@
 </head>
 
 <body>
-    <h1>Commander Scoreboard</h1>
+    <div class="scoreboard-header">
+        <h1>Commander Scoreboard</h1>
+        <button onclick="newGame()">New Game</button>
+    </div>
 
     <p>Round: <span id="round-counter">1</span></p>
 
@@ -45,7 +48,7 @@
     <button onclick="nextTurn()">Next Turn</button>
     <button onclick="toggleTimeout()">Timeout</button>
     <button onclick="backToSetup()">Back to Setup</button>
-    
+
     <script>
         const savedGameState = {{ game_state | tojson }};
     </script>
