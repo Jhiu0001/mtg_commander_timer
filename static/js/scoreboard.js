@@ -63,10 +63,11 @@ function nextTurn() {
     // Keep looking for the next player with time remaining
     do {
         activePlayer = (activePlayer + 1) % timers.length;
-        } 
-            while (
-            timers[activePlayer] === 0 && activePlayer !== startingPlayer
-            );
+    } 
+    while (
+        playerRows[activePlayer].dataset.eliminated === "true"
+        && activePlayer !== startingPlayer
+    );
 
     // Check whether we have wrapped around the player sequence
     if (activePlayer <= startingPlayer && activePlayer !== startingPlayer) {
@@ -103,9 +104,9 @@ document.addEventListener("keydown", function(event) {
 // Checks for active clock
 function checkForWinner() {
 
-    // Count how many players still have time
-    let playersRemaining = timers.filter(function(time) {
-        return time > 0;
+    // Count players who have not been eliminated
+    let playersRemaining = Array.from(playerRows).filter(function(row) {
+        return row.dataset.eliminated !== "true";
     }).length;
 
     // If only one player remains, the game is over
@@ -113,6 +114,7 @@ function checkForWinner() {
         gamePaused = true;
         return true;
     }
+
     return false;
 }
 
@@ -120,19 +122,40 @@ function decreaseLife(playerIndex) {
     let lifeElement = document.getElementById("life-" + playerIndex);
     let playerRow = playerRows[playerIndex];
 
+    // Do not allow eliminated players to gain life
+    if (playerRow.dataset.eliminated === "true") {
+        return;
+    }
+
     let currentLife = parseInt(lifeElement.textContent);
 
     if (currentLife > 0) {
         currentLife = currentLife - 1;
-        // Update both the display and the metadata used when saving game state
-        lifeElement.textContent = currentLife; 
+
+        // Update life display and metadata
+        lifeElement.textContent = currentLife;
         playerRow.dataset.playerLife = currentLife;
+    }
+
+    if (currentLife === 0) {
+        playerRow.dataset.eliminated = true;
+        playerRow.dataset.eliminationReason = "Life";
+
+        // Update elimination status
+        document.getElementById(
+            "status-" + playerIndex
+        ).textContent = "Eliminated - Life";
     }
 }
 
 function increaseLife(playerIndex) {
     let lifeElement = document.getElementById("life-" + playerIndex);
     let playerRow = playerRows[playerIndex];
+
+    // Do not allow eliminated players to gain life
+    if (playerRow.dataset.eliminated === "true") {
+        return;
+    }
 
     let currentLife = parseInt(lifeElement.textContent);
 
@@ -163,18 +186,29 @@ function startTimer() {
         }
         if (timers[activePlayer] > 0) {
 
-        timers[activePlayer] = timers[activePlayer] - 1;
+                timers[activePlayer] = timers[activePlayer] - 1;
 
-        document.getElementById(
-            "timer-" + activePlayer
-        ).textContent =
-            formatTime(timers[activePlayer]);
+                document.getElementById(
+                    "timer-" + activePlayer
+                ).textContent =
+                    formatTime(timers[activePlayer]);
 
-        if (timers[activePlayer] === 0) {
+                if (timers[activePlayer] === 0) {
+
+            let playerRow = playerRows[activePlayer];
+
+            // Record time-based elimination
+            playerRow.dataset.eliminated = true;
+            playerRow.dataset.eliminationReason = "Time";
+
+            // Update scoreboard status
+            document.getElementById(
+                "status-" + activePlayer
+            ).textContent = "Eliminated - Time";
 
             checkForWinner();
         }
-    }
+        }
     }, 1000);
 }
 

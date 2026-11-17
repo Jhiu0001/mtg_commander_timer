@@ -12,13 +12,25 @@ def parse_mmss(value):
 
     return minutes * 60 + seconds
 
+def create_player(player_id):
+    return {
+        "id": player_id,
+        "name": f"Player {player_id}",
+        "starting_time": 600,
+        "remaining_time": 600,
+        "starting_life_total": 40,
+        "life_total": 40,
+        "eliminated": False,
+        "elimination_reason": None
+    }
+
 app = Flask(__name__)
 
 players = [
-    {"id": 1,"name": "Player 1", "starting_time": 600, "remaining_time": 600,"starting_life_total": 40, "life_total": 40},
-    {"id": 2,"name": "Player 2", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40},
-    {"id": 3,"name": "Player 3", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40},
-    {"id": 4,"name": "Player 4", "starting_time": 600, "remaining_time": 600, "starting_life_total": 40, "life_total": 40}
+    create_player(1),
+    create_player(2),
+    create_player(3),
+    create_player(4)
 ]
 
 game_state = {
@@ -74,14 +86,7 @@ def home():
             return redirect(url_for("scoreboard"))
         
         else:
-            players.append({
-                "id": next_player_id,
-                "name": f"Player {next_player_id}",
-                "starting_time": 600,
-                "remaining_time": 600,
-                "starting_life_total": 40,
-                "life_total": 40
-            })
+            players.append(create_player(next_player_id))
 
             next_player_id += 1
 
@@ -99,6 +104,8 @@ def new_game():
     for player in players:
         player["remaining_time"] = player["starting_time"]
         player["life_total"] = player["starting_life_total"]
+        player["eliminated"] = False
+        player["elimination_reason"] = None
 
     # Reset overall game state
     game_state["round"] = 1

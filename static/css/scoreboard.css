@@ -32,6 +32,15 @@ h1 {font-size: 48px;}
     flex: 1;
 }
 
+.player-status {
+    font-size: 24px;
+    font-weight: bold;
+    color: #842029;
+    background-color: #f8d7da;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
 .player-life-controls {
     display: flex;
     align-items: center;

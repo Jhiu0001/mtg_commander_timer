@@ -27,6 +27,12 @@
             {{ player.name }}
             </span>
 
+            <span id="status-{{ loop.index0 }}" class="player-status">
+                {% if player.eliminated %}
+                    Eliminated - {{ player.elimination_reason }}
+                {% endif %}
+            </span>
+
             <span id="timer-{{ loop.index0 }}" class="player-timer">
                 {{ "%02d:%02d"|format(player.remaining_time // 60, player.remaining_time % 60) }}
             </span>
@@ -40,6 +46,7 @@
                     
                 <button onclick="increaseLife({{ loop.index0 }})">+</button>
             </span>
+
 
         </div>
 
