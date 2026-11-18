@@ -13,17 +13,25 @@
     </div>
 
     <p>Round: <span id="round-counter">1</span></p>
+    {% set player_colors = ['🟥', '🟦', '🟩', '🟨','🟪', '🟧', '🟫', '⬛'] %}
 
     {% for player in players %}
+        {% set player_index = loop.index0 %}
+        {% set color_index = loop.index0 % 8 %}
 
         <div class="player-row"
             data-player-id="{{ player.id }}"
             data-player-name="{{ player.name }}"
+            data-player-color="{{ player.color }}"
             data-remaining-time="{{ player.remaining_time }}"
             data-player-life="{{ player.life_total}}"
             data-eliminated="{{ player.eliminated | default(false) | lower }}"
             data-elimination-reason="{{ player.elimination_reason | default('') }}"
         >
+
+            <span class="player-color">
+            {{ player_colors[color_index] }}
+            </span>
 
             <span class="player-name">
             {{ player.name }}
@@ -62,6 +70,24 @@
                 >+</button>
             </span>
 
+             <!-- COMMANDER DAMAGE -->
+            <div class="commander-damage-controls">
+                {% for opponent_index in range(players|length) %}
+                    {% if opponent_index != player_index %}
+                        <div class="commander-damage-item">
+                            <span class="commander-damage-color">
+                                {{ player_colors[opponent_index % 8] }}
+                            </span>
+
+                            <input
+                                type="number"
+                                class="commander-damage-value"
+                                value="0"
+                            >
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
         </div>
 

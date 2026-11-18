@@ -32,6 +32,11 @@ h1 {font-size: 48px;}
     flex: 1;
 }
 
+/* Player color identifier */
+.player-color {
+    font-size: 28px;
+}
+
 .player-status {
     font-size: 24px;
     font-weight: bold;
@@ -67,6 +72,38 @@ h1 {font-size: 48px;}
 
 /* Buttons */
 button {font-size: 28px;padding: 12px 24px;margin: 10px 5px;}
+
+/* =====================================
+   COMMANDER DAMAGE
+===================================== */
+
+.commander-damage-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.commander-damage-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.commander-damage-color {
+    font-size: 24px;
+}
+
+.commander-damage-value {
+    width: 55px;
+    box-sizing: border-box;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #999;
+    border-radius: 6px;
+}
+
 
 /* =====================================
    GAME LOG TABLE
