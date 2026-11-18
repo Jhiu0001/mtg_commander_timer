@@ -14,6 +14,32 @@ function updateActivePlayer() {
     playerRows[activePlayer].classList.add("active-player");
 }
 
+// Centralized player elimination function
+function eliminatePlayer(playerIndex, reason) {
+
+    let playerRow = playerRows[playerIndex];
+
+    // Prevent duplicate elimination
+    if (playerRow.dataset.eliminated === "true") {
+        return;
+    }
+
+    // Record elimination
+    playerRow.dataset.eliminated = true;
+    playerRow.dataset.eliminationReason = reason;
+
+    // Update scoreboard status
+    document.getElementById(
+        "status-" + playerIndex
+    ).textContent = "Eliminated - " + reason;
+
+    // Disable player controls
+    disablePlayerControls(playerIndex);
+
+    // Check whether the game is over
+    checkForWinner();
+}
+
 // Advance to the next player
 async function nextTurn() {
 
@@ -129,19 +155,7 @@ function decreaseLife(playerIndex) {
     }
 
     if (currentLife === 0) {
-
-        playerRow.dataset.eliminated = true;
-        playerRow.dataset.eliminationReason = "Life";
-
-        // Update elimination status
-        document.getElementById(
-            "status-" + playerIndex
-        ).textContent = "Eliminated - Life";
-
-        // Disable life controls
-        disableLifeControls(playerIndex);
-
-        checkForWinner();
+        eliminatePlayer(playerIndex, "Life");
     }
 }
 
@@ -191,31 +205,63 @@ function editLife(playerIndex) {
 
     // Handle elimination
     if (newLife === 0) {
-
-        playerRow.dataset.eliminated = true;
-        playerRow.dataset.eliminationReason = "Life";
-
-        document.getElementById(
-            "status-" + playerIndex
-        ).textContent = "Eliminated - Life";
-
-        disableLifeControls(playerIndex);
-
-        checkForWinner();
+        eliminatePlayer(playerIndex, "Life");
     }
 
     saveGameState();
 }
 
-// Disable life controls for eliminated players
-function disableLifeControls(playerIndex) {
+// Retrieve Commander Damage for a specific player/opponent pairing
+function getCommanderDamage(playerIndex, opponentIndex) {
 
+    let damageInput = document.querySelector(
+        '.commander-damage-value[data-player-index="' + playerIndex +
+        '"][data-opponent-index="' + opponentIndex + '"]'
+    );
+
+    // Return 0 if the input does not exist
+    if (!damageInput) {
+        return 0;
+    }
+
+    // Convert the input value from a string into a number
+    return Number(damageInput.value);
+}
+
+// Check whether a player has received lethal Commander Damage
+function checkCommanderDamage(playerIndex, opponentIndex) {
+
+    // Retrieve damage from this specific opponent
+    let commanderDamage = getCommanderDamage(playerIndex, opponentIndex);
+
+    // Commander Damage elimination threshold
+    if (commanderDamage >= 21) {
+        eliminatePlayer(playerIndex, "Commander Damage");
+    }
+}
+
+
+// Disable player controls for eliminated players
+function disablePlayerControls(playerIndex) {
+
+    // Disable life controls
     document.getElementById("life-" + playerIndex).disabled = true;
 
     document.getElementById("decrease-" + playerIndex).disabled = true;
 
     document.getElementById("increase-" + playerIndex).disabled = true;
+
+    // Disable commander damage controls
+    let commanderDamageInputs = playerRows[playerIndex].querySelectorAll(
+        ".commander-damage-value"
+    );
+
+    commanderDamageInputs.forEach(function(input) {
+        input.disabled = true;
+    });
 }
+
+
 
 // =====================================
 // 3b. INITIALIZATION

@@ -27,20 +27,8 @@ function startTimer() {
                     formatTime(timers[activePlayer]);
 
                 if (timers[activePlayer] === 0) {
-
-            let playerRow = playerRows[activePlayer];
-
-            // Record time-based elimination
-            playerRow.dataset.eliminated = true;
-            playerRow.dataset.eliminationReason = "Time";
-
-            // Update scoreboard status
-            document.getElementById(
-                "status-" + activePlayer
-            ).textContent = "Eliminated - Time";
-
-            checkForWinner();
-        }
+                    eliminatePlayer(activePlayer, "Time");
+                }
         }
     }, 1000);
 }

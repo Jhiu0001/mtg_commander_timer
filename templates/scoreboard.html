@@ -82,7 +82,11 @@
                             <input
                                 type="number"
                                 class="commander-damage-value"
+                                data-player-index="{{ player_index }}"
+                                data-opponent-index="{{ opponent_index }}"
                                 value="0"
+                                onchange="checkCommanderDamage({{ player_index }}, {{ opponent_index }})"
+                                {% if player.eliminated %}disabled{% endif %}
                             >
                         </div>
                     {% endif %}
