@@ -108,25 +108,28 @@ function checkForWinner() {
 }
 
 function decreaseLife(playerIndex) {
+
     let lifeElement = document.getElementById("life-" + playerIndex);
     let playerRow = playerRows[playerIndex];
 
-    // Do not allow eliminated players to gain life
+    // Do not allow eliminated players to lose life
     if (playerRow.dataset.eliminated === "true") {
         return;
     }
 
-    let currentLife = parseInt(lifeElement.textContent);
+    let currentLife = Number(lifeElement.value);
 
     if (currentLife > 0) {
+
         currentLife = currentLife - 1;
 
         // Update life display and metadata
-        lifeElement.textContent = currentLife;
+        lifeElement.value = currentLife;
         playerRow.dataset.playerLife = currentLife;
     }
 
     if (currentLife === 0) {
+
         playerRow.dataset.eliminated = true;
         playerRow.dataset.eliminationReason = "Life";
 
@@ -134,6 +137,11 @@ function decreaseLife(playerIndex) {
         document.getElementById(
             "status-" + playerIndex
         ).textContent = "Eliminated - Life";
+
+        // Disable life controls
+        disableLifeControls(playerIndex);
+
+        checkForWinner();
     }
 }
 
@@ -146,12 +154,67 @@ function increaseLife(playerIndex) {
         return;
     }
 
-    let currentLife = parseInt(lifeElement.textContent);
+    let currentLife = Number(lifeElement.value);
 
     currentLife = currentLife + 1;
     // Update both the display and the metadata used when saving game state
-    lifeElement.textContent = currentLife;
+    lifeElement.value = currentLife;
     playerRow.dataset.playerLife = currentLife;
+}
+
+function editLife(playerIndex) {
+
+    let lifeElement = document.getElementById("life-" + playerIndex);
+    let playerRow = playerRows[playerIndex];
+
+    // Do not allow eliminated players to edit life
+    if (playerRow.dataset.eliminated === "true") {
+        return;
+    }
+
+    // Reject empty input
+    if (lifeElement.value.trim() === "") {
+        lifeElement.value = playerRow.dataset.playerLife;
+        return;
+    }
+
+    let newLife = Number(lifeElement.value);
+
+    // Validate input
+    if (!Number.isInteger(newLife) || newLife < 0) {
+        lifeElement.value = playerRow.dataset.playerLife;
+        return;
+    }
+
+    // Update stored life total
+    playerRow.dataset.playerLife = newLife;
+
+    // Handle elimination
+    if (newLife === 0) {
+
+        playerRow.dataset.eliminated = true;
+        playerRow.dataset.eliminationReason = "Life";
+
+        document.getElementById(
+            "status-" + playerIndex
+        ).textContent = "Eliminated - Life";
+
+        disableLifeControls(playerIndex);
+
+        checkForWinner();
+    }
+
+    saveGameState();
+}
+
+// Disable life controls for eliminated players
+function disableLifeControls(playerIndex) {
+
+    document.getElementById("life-" + playerIndex).disabled = true;
+
+    document.getElementById("decrease-" + playerIndex).disabled = true;
+
+    document.getElementById("increase-" + playerIndex).disabled = true;
 }
 
 // =====================================

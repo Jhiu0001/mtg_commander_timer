@@ -21,7 +21,9 @@
             data-player-name="{{ player.name }}"
             data-remaining-time="{{ player.remaining_time }}"
             data-player-life="{{ player.life_total}}"
-            >
+            data-eliminated="{{ player.eliminated | default(false) | lower }}"
+            data-elimination-reason="{{ player.elimination_reason | default('') }}"
+        >
 
             <span class="player-name">
             {{ player.name }}
@@ -38,13 +40,26 @@
             </span>
 
             <span class="player-life-controls">  
-                <button onclick="decreaseLife({{ loop.index0 }})">-</button>
+                <button
+                    id="decrease-{{ loop.index0 }}"
+                    onclick="decreaseLife({{ loop.index0 }})"
+                    {% if player.eliminated %}disabled{% endif %}
+                >-</button>
 
-                <span id="life-{{ loop.index0 }}" class="player-life">
-                    {{ player.life_total }}
-                </span>
+                <input
+                    type="number"
+                    id="life-{{ loop.index0 }}"
+                    class="player-life"
+                    value="{{ player.life_total }}"
+                    onchange="editLife({{ loop.index0 }})"
+                    {% if player.eliminated %}disabled{% endif %}
+                >
                     
-                <button onclick="increaseLife({{ loop.index0 }})">+</button>
+                <button
+                    id="increase-{{ loop.index0 }}"
+                    onclick="increaseLife({{ loop.index0 }})"
+                    {% if player.eliminated %}disabled{% endif %}
+                >+</button>
             </span>
 
 

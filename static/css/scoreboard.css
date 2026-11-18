@@ -47,6 +47,18 @@ h1 {font-size: 48px;}
     gap: 10px;
 }
 
+/* Player life total input */
+.player-life {
+    width: 100px;
+    box-sizing: border-box;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px;
+    border: 2px solid #999;
+    border-radius: 6px;
+}
+
 /* Highlight the active player */
 .active-player {background-color: #d9ead3; border: 3px solid #38761d; font-weight: bold;}
 

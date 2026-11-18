@@ -165,6 +165,8 @@ def save_game_state():
                 player["name"] = current_player["name"]
                 player["remaining_time"] = int(current_player["remaining_time"])
                 player["life_total"] = int(current_player["life_total"])
+                player["eliminated"] = current_player["eliminated"]
+                player["elimination_reason"] = current_player["elimination_reason"]
                 break
 
     # Update overall game state

@@ -15,7 +15,7 @@ function captureLogEntry() {
 
     // Capture every player's current life total
     let lifeTotals = Array.from(playerRows).map(function(row) {
-        return Number(row.querySelector(".player-life").textContent);
+        return Number(row.querySelector(".player-life").value);
     });
 
     // Return the historical snapshot

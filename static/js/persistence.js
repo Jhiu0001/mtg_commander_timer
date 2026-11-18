@@ -22,14 +22,20 @@ function captureGameState() {
         let seconds = parseInt(timeParts[1]);
         let remainingTime = (minutes * 60) + seconds;
         // Capture displayed life
-        let life =  row.querySelector(".player-life").textContent;
+        let life = Number(row.querySelector(".player-life").value);
+
+        // Capture elimination information
+        let eliminated = row.dataset.eliminated === "true";
+        let eliminationReason = row.dataset.eliminationReason || "";
 
         // Add player information to our array
         currentPlayers.push({
             id: id,
             name: name,
             remaining_time: remainingTime,
-            life_total: life
+            life_total: life,
+            eliminated: eliminated,
+            elimination_reason: eliminationReason
         });
     });
 
