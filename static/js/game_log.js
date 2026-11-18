@@ -38,7 +38,7 @@ function displayGameLog() {
     logBody.innerHTML = "";
 
     // Loop through every historical snapshot
-    gameLog.forEach(function(entry) {
+    gameLog.slice().reverse().forEach(function(entry) {
 
         let row = document.createElement("tr");
 
