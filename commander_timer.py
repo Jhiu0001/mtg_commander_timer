@@ -25,12 +25,13 @@ def create_player(player_id):
         "elimination_reason": None
     }
 
-def create_log_entry(round_number, player_name, remaining_time, life_totals):
+def create_log_entry(round_number, player_name, remaining_time, life_totals, cdr_totals):
     return {
         "round": round_number,
         "player_name": player_name,
         "remaining_time": remaining_time,
-        "life_totals": life_totals
+        "life_totals": life_totals,
+        "cdr_totals": cdr_totals
     }
 
 app = Flask(__name__)
@@ -134,7 +135,8 @@ def new_game():
             round_number=1,
             player_name="Start",
             remaining_time=players[0]["remaining_time"],
-            life_totals=initial_life_totals
+            life_totals=initial_life_totals,
+            cdr_totals=[0] * len(players)
         )
         game_state["game_log"].append(initial_log_entry)
     else:

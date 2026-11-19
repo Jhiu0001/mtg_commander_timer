@@ -1,5 +1,5 @@
 // =====================================
-// 5. LOGGING
+// LOGGING
 // =====================================
 
 // Capture a log entry for a completed turn
@@ -18,12 +18,29 @@ function captureLogEntry() {
         return Number(row.querySelector(".player-life").value);
     });
 
+    // Capture cumulative Commander Damage Received by every player
+    let cdrTotals = Array.from(playerRows).map(function(row, playerIndex) {
+
+        let commanderDamageInputs = row.querySelectorAll(
+            ".commander-damage-value"
+        );
+
+        let totalDamage = 0;
+
+        commanderDamageInputs.forEach(function(input) {
+            totalDamage += Number(input.value);
+        });
+
+        return totalDamage;
+    });
+
     // Return the historical snapshot
     return {
         round: round,
         player_name: playerName,
         remaining_time: remainingTime,
-        life_totals: lifeTotals
+        life_totals: lifeTotals,
+        cdr_totals: cdrTotals
     };
 }
 
@@ -63,6 +80,13 @@ function displayGameLog() {
             let lifeCell = document.createElement("td");
             lifeCell.textContent = life;
             row.appendChild(lifeCell);
+        });
+
+        // Individual player CDR totals
+        entry.cdr_totals.forEach(function(cdr) {
+            let cdrCell = document.createElement("td");
+            cdrCell.textContent = cdr;
+            row.appendChild(cdrCell);
         });
 
         logBody.appendChild(row);

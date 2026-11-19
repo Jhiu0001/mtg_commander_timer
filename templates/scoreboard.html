@@ -113,8 +113,12 @@
                     <th>Time Remaining</th>
 
                     {% for player in players %}
-                        <th>{{ player.name }}</th>
+                        <th>{{ player.name }}</th> 
                     {% endfor %}
+                    
+                    {% for player in players %}
+                        <th>CDR {{ player.name }}</th>
+                    {% endfor %}   
 
                 </tr>
             </thead>
