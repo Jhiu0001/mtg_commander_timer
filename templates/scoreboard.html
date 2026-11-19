@@ -84,7 +84,7 @@
                                 class="commander-damage-value"
                                 data-player-index="{{ player_index }}"
                                 data-opponent-index="{{ opponent_index }}"
-                                value="0"
+                                value="{{ (player.commander_damage | default([]) | selectattr('opponent_index', 'equalto', opponent_index) | map(attribute='damage') | first) | default(0) }}"
                                 onchange="checkCommanderDamage({{ player_index }}, {{ opponent_index }})"
                                 {% if player.eliminated %}disabled{% endif %}
                             >

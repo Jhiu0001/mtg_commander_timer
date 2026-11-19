@@ -1,5 +1,5 @@
 // =====================================
-// 3. STATE PERSISTENCE - How does JavaScript communicate with Flask?
+// STATE PERSISTENCE - How does JavaScript communicate with Flask?
 // =====================================
 
 // Capture the current game state
@@ -12,17 +12,37 @@ function captureGameState() {
     playerRows.forEach(function(row) {
         // Capture player ID
         let id = Number(row.dataset.playerId);
+
         // Capture player name
         let name = row.dataset.playerName;
+
         // Capture displayed time
         let timeDisplay = row.querySelector(".player-timer").textContent;
+
         // Convert MM:SS into seconds
         let timeParts = timeDisplay.split(":");
         let minutes = parseInt(timeParts[0]);
         let seconds = parseInt(timeParts[1]);
         let remainingTime = (minutes * 60) + seconds;
+
         // Capture displayed life
         let life = Number(row.querySelector(".player-life").value);
+
+        // Capture Commander Damage
+        let commanderDamage = [];
+
+        let commanderDamageInputs = row.querySelectorAll(
+            ".commander-damage-value"
+        );
+
+        commanderDamageInputs.forEach(function(input) {
+
+            commanderDamage.push({
+                opponent_index: Number(input.dataset.opponentIndex),
+                damage: Number(input.value)
+            });
+
+        });
 
         // Capture elimination information
         let eliminated = row.dataset.eliminated === "true";
@@ -34,6 +54,7 @@ function captureGameState() {
             name: name,
             remaining_time: remainingTime,
             life_total: life,
+            commander_damage: commanderDamage,
             eliminated: eliminated,
             elimination_reason: eliminationReason
         });

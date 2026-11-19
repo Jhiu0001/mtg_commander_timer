@@ -20,6 +20,7 @@ def create_player(player_id):
         "remaining_time": 600,
         "starting_life_total": 40,
         "life_total": 40,
+        "commander_damage": [],
         "eliminated": False,
         "elimination_reason": None
     }
@@ -113,6 +114,7 @@ def new_game():
     for player in players:
         player["remaining_time"] = player["starting_time"]
         player["life_total"] = player["starting_life_total"]
+        player["commander_damage"] = []
         player["eliminated"] = False
         player["elimination_reason"] = None
 
@@ -137,6 +139,7 @@ def new_game():
         game_state["game_log"].append(initial_log_entry)
     else:
         game_state["active_player_id"] = None
+
 
     # Return to a fresh scoreboard
     return redirect(url_for("scoreboard"))
@@ -165,6 +168,7 @@ def save_game_state():
                 player["name"] = current_player["name"]
                 player["remaining_time"] = int(current_player["remaining_time"])
                 player["life_total"] = int(current_player["life_total"])
+                player["commander_damage"] = current_player["commander_damage"]
                 player["eliminated"] = current_player["eliminated"]
                 player["elimination_reason"] = current_player["elimination_reason"]
                 break
